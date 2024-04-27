@@ -14,7 +14,7 @@ on:
 
 jobs:
   lint:
-    name: Lint
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
         run: cargo +nightly clippy --all-targets --all-features -- -D warnings
 
   style:
-    name: Check coding style
+    name: Formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -66,7 +66,7 @@ jobs:
         run: cargo +nightly fmt -- --check
 
   test:
-    name: Test
+    name: Testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
