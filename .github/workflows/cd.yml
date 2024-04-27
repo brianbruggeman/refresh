@@ -67,11 +67,11 @@ jobs:
       matrix:
         config:
           # Linux
-          - {os: ubuntu-latest, bin_name: we-code, command: cargo, target: x86_64-unknown-linux-musl, cross: false}
-          - {os: ubuntu-latest, bin_name: we-code, command: cargo, target: aarch64-unknown-linux-musl, cross: yes}
+          - {os: ubuntu-latest, bin_name: refresh, command: cargo, target: x86_64-unknown-linux-musl, cross: false}
+          - {os: ubuntu-latest, bin_name: refresh, command: cargo, target: aarch64-unknown-linux-musl, cross: yes}
           # Macos
-          - {os: macos-latest, bin_name: we-code, command: cargo, target: x86_64-apple-darwin, cross: false}
-          - {os: macos-latest, bin_name: we-code, command: cargo, target: aarch64-apple-darwin, cross: false}
+          - {os: macos-latest, bin_name: refresh, command: cargo, target: x86_64-apple-darwin, cross: false}
+          - {os: macos-latest, bin_name: refresh, command: cargo, target: aarch64-apple-darwin, cross: false}
     runs-on: ${{ matrix.config.os }}
     steps:
       - name: Checkout code
