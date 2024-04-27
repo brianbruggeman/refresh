@@ -1,0 +1,11 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # Enable updates for Cargo (Rust)
+  - package-ecosystem: "cargo"
+    directory: "/"  # Location of Cargo.toml
+    schedule:
+      interval: "weekly"  # Check for updates weekly
+      day: "sunday"  # Check for updates on Sunday
+    commit-message:
+      prefix: "chore(deps): update to latest"  # Customize commit message prefix
