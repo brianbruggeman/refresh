@@ -43,3 +43,6 @@ the root path where the repositories are collected.  This will run Monday throug
 - [ ] add support for optionally updating main even when the repo is dirty
 - [ ] add an install script for latest release for arch and platform
 - [ ] add a way for refresh to auto-update itself
+- [ ] support auto-refresh on a cadence
+- [ ] allow each repo to fail independently
+- [ ] allow each repo to have its own refresh schedule
