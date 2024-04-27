@@ -6,11 +6,25 @@ This project is a simple way to pull all of the remote repositories from a GitHu
 ## Quickstart
 
 ```bash
-cargo install --git https://path/to/refresh.git
+cargo install --git https://github.com/brianbruggeman/refresh
 ```
 
 ## Usage
 
 ```bash
 refresh --help
+```
+
+## Example crons
+
+Clone new repos once a week on Sunday at 12a.  This will clone new repos into the root path and
+pull the latest changes from the remote repositories.
+```bash
+0 0 * * SUN /usr/local/bin/refresh --all --github-org=... --github-token=... --path=...
+```
+
+Fetch and pull the latest changes from the remote repositories for the repos found within
+the root path where the repositories are collected.  This will run Monday through Friday at 12a.
+```bash
+0 0 * * MON-FRI /usr/local/bin/refresh --github-org=... --github-token=... --path=...
 ```
