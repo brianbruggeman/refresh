@@ -37,7 +37,7 @@ jobs:
             target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
       - name: Lint code
-        run: make lint
+        run: cargo +nightly clippy --all-targets --all-features -- -D warnings
 
   style:
     name: Check coding style
@@ -63,7 +63,7 @@ jobs:
             target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
       - name: Check coding style
-        run: make style
+        run: cargo +nightly fmt -- --check
 
   test:
     name: Test
@@ -89,4 +89,4 @@ jobs:
             target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
       - name: Test code
-        run: make test
+        run: cargo test
