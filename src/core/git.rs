@@ -52,16 +52,10 @@ pub async fn clone_repo(
     Ok(())
 }
 
-pub async fn is_dirty(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
-    // git status --porcelain
-    let output = git(&["status", "--porcelain"], repo_path, "").await?;
-    Ok(!output.is_empty())
-}
-
-pub async fn is_main_branch(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
-    // git rev-parse --abbrev-ref HEAD
-    let output = git(&["rev-parse", "--abbrev-ref", "HEAD"], repo_path, "").await?;
-    Ok(output.trim() == "main")
+pub async fn fetch_repo(repo_path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
+    // git fetch --all
+    git(&["fetch", "--all"], repo_path, github_token).await?;
+    Ok(())
 }
 
 // Executes a git command with Command
@@ -89,10 +83,16 @@ pub async fn git(
     }
 }
 
-pub async fn fetch_repo(repo_path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
-    // git fetch --all
-    git(&["fetch", "--all"], repo_path, github_token).await?;
-    Ok(())
+pub async fn is_dirty(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
+    // git status --porcelain
+    let output = git(&["status", "--porcelain"], repo_path, "").await?;
+    Ok(!output.is_empty())
+}
+
+pub async fn is_main_branch(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
+    // git rev-parse --abbrev-ref HEAD
+    let output = git(&["rev-parse", "--abbrev-ref", "HEAD"], repo_path, "").await?;
+    Ok(output.trim() == "main")
 }
 
 pub async fn pull_repo(repo_path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
