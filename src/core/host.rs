@@ -18,11 +18,7 @@ pub async fn find_local_repos(path: impl AsRef<Path>) -> anyhow::Result<Vec<Repo
         let git_path = path.join(".git");
         if path.is_dir() && git_path.exists() && git_path.is_dir() {
             let repo = Repo {
-                name: path
-                    .file_name()
-                    .expect("Could not get filename")
-                    .to_string_lossy()
-                    .to_string(),
+                name: path.file_name().expect("Could not get filename").to_string_lossy().to_string(),
                 ssh_url: "".to_string(),
             };
             repos.push(repo);

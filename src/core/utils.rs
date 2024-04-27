@@ -1,23 +1,20 @@
-use std::path::{Path, PathBuf};
 use std::borrow::Cow;
+use std::path::{Path, PathBuf};
 
 use path_absolutize::Absolutize;
 
 use super::Repo;
 
 pub fn compare_repos(remote_repos: &[Repo], local_repos: &[Repo]) -> Vec<Repo> {
-    if remote_repos.len() == 0 {
+    if remote_repos.is_empty() {
         return Vec::new();
-    } else if local_repos.len() == 0 {
+    } else if local_repos.is_empty() {
         tracing::info!("No local repos found");
         return remote_repos.to_vec();
     }
     let mut repos_to_clone = Vec::new();
     for remote_repo in remote_repos {
-        if !local_repos
-            .iter()
-            .any(|local_repo| local_repo.name == remote_repo.name)
-        {
+        if !local_repos.iter().any(|local_repo| local_repo.name == remote_repo.name) {
             repos_to_clone.push(remote_repo.clone());
         }
     }

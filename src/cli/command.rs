@@ -33,16 +33,16 @@ impl Command {
             cmd.github_token = rpassword::prompt_password("GitHub token: ").unwrap();
         }
         let current_dir = env::current_dir()
-                .expect("Failed to determine current directory")
-                .to_str()
-                .expect("Failed to convert path to string")
-                .to_string();
+            .expect("Failed to determine current directory")
+            .to_str()
+            .expect("Failed to convert path to string")
+            .to_string();
 
         // When path is empty, use current directory
         if cmd.path.is_empty() {
-            cmd.path = current_dir.clone();
+            cmd.path.clone_from(&current_dir);
             tracing::debug!("Using current directory: `{}`", cmd.path);
-            let current_path =  Path::new(&current_dir);
+            let current_path = Path::new(&current_dir);
             let filename = current_path.file_name().unwrap().to_str().unwrap();
             let git_path = current_path.join(".git");
             if current_path.exists() && filename == "refresh" && current_path.is_dir() && git_path.exists() && git_path.is_dir() {

@@ -3,17 +3,13 @@ use std::path::Path;
 use std::process::Command;
 
 use futures::future::join_all;
-use tokio::task;
 use indicatif::{ProgressBar, ProgressStyle};
+use tokio::task;
 
 use super::{true_path, Repo};
 
-pub async fn clone_repos(
-    repos: &[Repo],
-    path: impl AsRef<Path>,
-    github_token: &str,
-) -> anyhow::Result<()> {
-    if repos.len() == 0 {
+pub async fn clone_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
+    if repos.is_empty() {
         tracing::debug!("No repos to clone");
         return Ok(());
     }
@@ -41,8 +37,7 @@ pub async fn clone_repos(
         // Spawn a new asynchronous task for each repository
         task::spawn(async move {
             let token = token_clone.clone();
-            let result = clone_repo(repo_clone, path, &token, pb).await;
-            result
+            clone_repo(repo_clone, path, &token, pb).await
         })
     });
 
@@ -53,20 +48,12 @@ pub async fn clone_repos(
     let results = join_all(futures_collected).await;
 
     // Check results
-    results
-        .into_iter()
-        .flatten()
-        .collect::<anyhow::Result<Vec<_>>>()?;
+    results.into_iter().flatten().collect::<anyhow::Result<Vec<_>>>()?;
 
     Ok(())
 }
 
-pub async fn clone_repo(
-    repo: Repo,
-    path: impl AsRef<Path>,
-    github_token: &str,
-    pb: ProgressBar,
-) -> anyhow::Result<()> {
+pub async fn clone_repo(repo: Repo, path: impl AsRef<Path>, github_token: &str, pb: ProgressBar) -> anyhow::Result<()> {
     // git clone <url>
     git(&["clone", &repo.ssh_url, &repo.name], path.as_ref(), github_token).await?;
     pb.set_message(format!("Cloned: `{}` into `{}`", repo.name, path.as_ref().display()));
@@ -82,11 +69,7 @@ pub async fn fetch_repo(repo_path: impl AsRef<Path>, github_token: &str, pb: &Pr
 }
 
 // Executes a git command with Command
-pub async fn git(
-    args: &[impl AsRef<str>],
-    path: impl AsRef<Path>,
-    github_token: impl AsRef<str>,
-) -> anyhow::Result<String> {
+pub async fn git(args: &[impl AsRef<str>], path: impl AsRef<Path>, github_token: impl AsRef<str>) -> anyhow::Result<String> {
     // Setup command to execute git command
     let args = args.iter().map(|arg| arg.as_ref()).collect::<Vec<_>>();
     let output = Command::new("git")
@@ -98,11 +81,7 @@ pub async fn git(
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     } else {
-        Err(anyhow::anyhow!(
-            "Failed to execute git command: `git {}` - {}",
-            args.join(" "),
-            String::from_utf8_lossy(&output.stderr)
-        ))
+        Err(anyhow::anyhow!("Failed to execute git command: `git {}` - {}", args.join(" "), String::from_utf8_lossy(&output.stderr)))
     }
 }
 
@@ -125,10 +104,8 @@ pub async fn is_dirty(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
 pub async fn is_main_branch(repo_path: impl AsRef<Path>) -> anyhow::Result<bool> {
     // git rev-parse --abbrev-ref HEAD
     match git(&["rev-parse", "--abbrev-ref", "HEAD"], repo_path, "").await {
-        Ok(output) => {
-            Ok(output.trim() == "main")
-        }
-        Err(_) => return Ok(false),
+        Ok(output) => Ok(output.trim() == "main"),
+        Err(_) => Ok(false),
     }
 }
 
@@ -140,7 +117,7 @@ pub async fn pull_repo(repo_path: impl AsRef<Path>, github_token: &str, pb: &Pro
 }
 
 pub async fn update_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
-    if repos.len() == 0 {
+    if repos.is_empty() {
         tracing::debug!("No repos to update");
         return Ok(());
     }
@@ -196,11 +173,7 @@ pub async fn update_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: 
     let results = join_all(futures_collected).await;
 
     // Check results
-    results
-        .into_iter()
-        .flatten()
-        .collect::<anyhow::Result<Vec<_>>>()?;
+    results.into_iter().flatten().collect::<anyhow::Result<Vec<_>>>()?;
 
     Ok(())
 }
-

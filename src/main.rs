@@ -19,6 +19,5 @@ fn initialize_logging() {
         .with_span_events(FmtSpan::CLOSE)
         .finish();
 
-    tracing::subscriber::set_global_default(subscriber)
-        .expect("setting default subscriber failed");
+    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
 }

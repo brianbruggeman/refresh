@@ -29,8 +29,7 @@ pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Resu
                             let link = headers.get("Link");
                             if let Some(link) = link {
                                 let link = link.to_str().unwrap();
-                                let next_link =
-                                    link.split(',').find(|link| link.contains("rel=\"next\""));
+                                let next_link = link.split(',').find(|link| link.contains("rel=\"next\""));
                                 if let Some(next_link) = next_link {
                                     let next_link = next_link.split(';').next().unwrap().trim();
                                     next_link
@@ -47,10 +46,7 @@ pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Resu
                             repos.extend(new_repos.iter().cloned());
                         }
                         Err(why) => {
-                            return Err(anyhow::anyhow!(
-                                "Failed to parse response for org repos: `{org_name}`. {}",
-                                why
-                            ));
+                            return Err(anyhow::anyhow!("Failed to parse response for org repos: `{org_name}`. {}", why));
                         }
                     }
                 } else {
@@ -61,10 +57,7 @@ pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Resu
                 }
             }
             Err(why) => {
-                return Err(anyhow::anyhow!(
-                    "Failed to send request for org repos: `{org_name}`. {}.",
-                    why
-                ));
+                return Err(anyhow::anyhow!("Failed to send request for org repos: `{org_name}`. {}.", why));
             }
         };
     }
