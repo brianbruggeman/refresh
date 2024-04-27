@@ -116,7 +116,7 @@ jobs:
         run: echo "VERSION=${{ needs.detect-version-change.outputs.version }}" >> $GITHUB_ENV
 
       - name: Pack binaries
-        run: tar -C ./target/${{ matrix.config.target }}/release -czvf ${{ matrix.config.bin_name }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}.tar.gz ${{ matrix.config.bin_name }}
+        run: tar -C ./target/${{ matrix.config.target }}/release -czvf ${{ matrix.config.bin_name }}-${{ env.VERSION }}-${{ matrix.config.target }}.tar.gz ${{ matrix.config.bin_name }}
 
       - name: Release binaries
         uses: svenstaro/upload-release-action@v1-release
