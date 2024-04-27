@@ -40,16 +40,13 @@ impl Command {
 
         // When path is empty, use current directory
         if cmd.path.is_empty() {
-            cmd.path = current_dir.clone();
             if current_dir == "refresh" {
-                let path = Path::new(&current_dir);
-                // if read_dir folder contains .git, use "repos"
-                if path
-                    .read_dir()
-                    .expect("Failed to read directory")
-                    .any(|entry| entry.unwrap().path().ends_with(".git"))
-                {
+                let git_path = Path::new(&current_dir).join(".git");
+                // if refresh contains .git, use "repos"
+                if git_path.exists() && git_path.is_dir() {
                     cmd.path = "repos".to_string();
+                } else {
+                    cmd.path = current_dir.clone();
                 }
             }
             println!("Set path to: `{}`", cmd.path);
