@@ -1,7 +1,7 @@
 mod cli;
 use tracing_subscriber::fmt::format::FmtSpan;
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 
 #[tokio::main]
 async fn main() {
