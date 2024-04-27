@@ -2,11 +2,16 @@ use super::Repo;
 
 pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Result<Vec<Repo>> {
     let client = reqwest::Client::new();
-    let mut url = format!("https://api.github.com/orgs/{org_name}/repos");
+    let user = whoami::username();
+    let org_or_user = match org_name == user {
+        true => "users",
+        false => "orgs",
+    };
+    let mut url = format!("https://api.github.com/{org_or_user}/{org_name}/repos");
     let mut repos = Vec::new();
 
     loop {
-        println!("Fetching repos from: {}", url);
+        tracing::debug!("Fetching repos from: {}", url);
         let response = client
             .get(&url)
             .header("Authorization", format!("Bearer {}", github_token))
@@ -63,5 +68,6 @@ pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Resu
             }
         };
     }
+    tracing::info!("Fetched: {} repos", &repos.len());
     Ok(repos)
 }

@@ -29,7 +29,7 @@ impl Command {
 
         if cmd.github_token.is_empty() {
             // Prompt
-            println!("Please set `GITHUB_TOKEN`, rerun with `--github-token` or enter below.");
+            tracing::error!("Please set `GITHUB_TOKEN`, rerun with `--github-token` or enter below.");
             cmd.github_token = rpassword::prompt_password("GitHub token: ").unwrap();
         }
         let current_dir = env::current_dir()
@@ -40,26 +40,31 @@ impl Command {
 
         // When path is empty, use current directory
         if cmd.path.is_empty() {
-            if current_dir == "refresh" {
-                let git_path = Path::new(&current_dir).join(".git");
+            cmd.path = current_dir.clone();
+            tracing::debug!("Using current directory: `{}`", cmd.path);
+            let current_path =  Path::new(&current_dir);
+            let filename = current_path.file_name().unwrap().to_str().unwrap();
+            let git_path = current_path.join(".git");
+            if current_path.exists() && filename == "refresh" && current_path.is_dir() && git_path.exists() && git_path.is_dir() {
                 // if refresh contains .git, use "repos"
-                if git_path.exists() && git_path.is_dir() {
-                    cmd.path = "repos".to_string();
-                } else {
-                    cmd.path = current_dir.clone();
-                }
+                tracing::debug!("Found `refresh` repo,  using: `repos`");
+                cmd.path = current_path.join("repos").to_str().unwrap().to_string();
             }
-            println!("Set path to: `{}`", cmd.path);
+            tracing::debug!("Set path to: `{}`", cmd.path);
+        } else {
+            tracing::debug!("Using provided directory: `{}`", cmd.path);
         }
 
         if cmd.org_name.is_empty() {
-            cmd.org_name = Path::new(&cmd.path)
-                .parent()
-                .and_then(Path::file_name)
-                .and_then(std::ffi::OsStr::to_str)
-                .unwrap_or_default()
-                .to_string();
+            tracing::debug!("Org is empty");
+            let path = Path::new(&cmd.path);
+            let filename = path.file_name().unwrap().to_str().unwrap();
+            cmd.org_name = filename.to_string();
         }
+        if cmd.org_name == "mine" {
+            cmd.org_name = whoami::username();
+        }
+        tracing::debug!("Set org to: `{}`", cmd.org_name);
 
         cmd
     }
