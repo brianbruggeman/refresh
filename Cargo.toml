@@ -17,7 +17,7 @@ rpassword = "7.3.1"
 serde = { version = "1.0.205", features = ["derive"] }
 serde_json = { version = "1.0.122", features = ["preserve_order"] }
 shellexpand = "3.1.0"
-tokio = { version = "1.39.2", features = ["full"] }
+tokio = { version = "1.39.3", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "serde", "serde_json", "json"] }
 whoami = "1.5.1"
