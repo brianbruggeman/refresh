@@ -65,9 +65,9 @@ jobs:
           run: |
             if command -v cross &> /dev/null
             then
-            echo "::set-output name=installed::true"
+                echo "name=installed=true" >> $GITHUB_OUTPUT
             else
-            echo "::set-output name=installed::false"
+                echo "name=installed=false" >> $GITHUB_OUTPUT
             fi
         - name: Install Cross
           if: steps.cross-check.outputs.installed != 'true'
