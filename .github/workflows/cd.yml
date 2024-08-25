@@ -171,4 +171,4 @@ jobs:
           draft: false
           prerelease: false
           tag_name: ${{ needs.semrel.outputs.next-version }}
-          token: ${{ env.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
