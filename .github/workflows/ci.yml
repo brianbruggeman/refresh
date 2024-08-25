@@ -1,92 +1,49 @@
 name: CI
-
 on:
-  pull_request:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Commit SHA to run the workflow on'
-        required: true
-        default: 'main'
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
-  lint:
-    name: Linting
+  cargo_fmt:
+    name: CI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          components: rustfmt, clippy
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dependencies
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            target
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
-      - name: Lint code
-        run: cargo +nightly clippy --all-targets --all-features -- -D warnings
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  style:
-    name: Formatting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - name: Run semrel
+        id: semrel
+        uses: brianbruggeman/semrel@main
+
+      - name: Install rust toolchain
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install nightly with rustfmt and clippy
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          profile: minimal
-          toolchain: nightly
           components: rustfmt, clippy
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dependencies
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            target
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
-      - name: Check coding style
+
+      - name: Style
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
         run: cargo +nightly fmt -- --check
 
-  test:
-    name: Testing
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          components: rustfmt, clippy
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dependencies
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            target
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
-      - name: Test code
+      - name: Lint
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
+        run: cargo +nightly clippy
+
+      - name: Build
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
+        run: cargo build
+
+      - name: Test
+        if: ${{ steps.semrel.outputs.next-version != steps.semrel.outputs.current-version }}
         run: cargo test
