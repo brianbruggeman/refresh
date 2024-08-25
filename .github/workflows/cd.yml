@@ -24,7 +24,7 @@ jobs:
       log: ${{ steps.semrel.outputs.log }}
       next-version: ${{ steps.semrel.outputs.next-version }}
       release-notes: ${{ steps.semrel.outputs.release-notes }}
-      version-changed: ${{ steps.version-change-detection.outputs.version-changed }}
+      version-changed: ${{ steps.version-check.outputs.version-changed }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
