@@ -40,29 +40,23 @@ jobs:
           release_notes=$(./semrel show notes)
           log=$(./semrel show log)
 
-          echo "::set-output name=current-version::$current_version"
-          echo "::set-output name=next-version::$next_version"
-          echo "::set-output name=release-notes::$release_notes"
-          echo "::set-output name=log::$log"
+          echo "current-version=$current_version" >> $GITHUB_OUTPUT
+          echo "next-version=$next_version" >> $GITHUB_OUTPUT
+          echo "release-notes=$release_notes" >> $GITHUB_OUTPUT
+          echo "log=$log" >> $GITHUB_OUTPUT
 
       - name: Check for version change
         id: version-check
         run: |
           if [ "${{ steps.semrel.outputs.next-version }}" != "${{ steps.semrel.outputs.current-version }}" ]; then
-            echo "version-changed=true" >> $GITHUB_ENV
-            echo "::set-output name=version-changed::true"
+            echo "version-changed=true" >> $GITHUB_OUTPUT
           else
-            echo "version-changed=false" >> $GITHUB_ENV
-            echo "::set-output name=version-changed::false"
+            echo "version-changed=false" >> $GITHUB_OUTPUT
           fi
-          echo "RELEASE_NOTES=${{ steps.semrel.output.release-notes }}" >> $GITHUB_ENV
-          echo "::set-output name=release-notes=$RELEASE_NOTES"
-          echo "CURRENT_VERSION=${{ steps.semrel.output.current-version }}" >> $GITHUB_ENV
-          echo "::set-output name=current-version=$CURRENT_VERSION"
-          echo "NEXT_VERSION=${{ steps.semrel.output.next-version }}" >> $GITHUB_ENV
-          echo "::set-output name=next-version=$NEXT_VERSION"
-          echo "LOG=${{ steps.semrel.output.log }}" >> $GITHUB_ENV
-          echo "::set-output name=log=$LOG"
+          echo "RELEASE_NOTES=${{ steps.semrel.output.release-notes }}" >> $GITHUB_OUTPUT
+          echo "CURRENT_VERSION=${{ steps.semrel.output.current-version }}" >> $GITHUB_OUTPUT
+          echo "NEXT_VERSION=${{ steps.semrel.output.next-version }}" >> $GITHUB_OUTPUT
+          echo "LOG=${{ steps.semrel.output.log }}" >> $GITHUB_OUTPUT
 
   release:
     needs: detect-version-change
