@@ -35,15 +35,17 @@ jobs:
       - name: Run semrel commands
         id: semrel
         run: |
-          current_version=$(./semrel show current)
-          next_version=$(./semrel show next)
           release_notes=$(./semrel show notes)
           log=$(./semrel show log)
 
+          # Encode multiline outputs to base64 to handle special characters and newlines
+          encoded_release_notes=$(echo "$release_notes" | base64 | tr -d '\n')
+          encoded_log=$(echo "$log" | base64 | tr -d '\n')
+
           echo "current-version=$(./semrel show current)" >> $GITHUB_OUTPUT
           echo "next-version=$(./semrel show next)" >> $GITHUB_OUTPUT
-          echo "release-notes=$(./semrel show notes | base64)" >> $GITHUB_OUTPUT
-          echo "log=$(./semrel show log | base64)" >> $GITHUB_OUTPUT
+          echo "release-notes=$encoded_release_notes" >> $GITHUB_OUTPUT
+          echo "log=$encoded_log" >> $GITHUB_OUTPUT
 
       - name: Check for version change
         id: version-check
