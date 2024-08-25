@@ -1,34 +1,59 @@
 [package]
 name = "refresh"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0.86"
-clap = { version = "4.5.16", features = ["derive", "env"] }
 dotenvy = "0.15.7"
 futures = "0.3.30"
 indicatif = "0.17.8"
 path-absolutize = "3.1.1"
 rayon = "1.10.0"
 rpassword = "7.3.1"
-serde = { version = "1.0.209", features = ["derive"] }
-serde_json = { version = "1.0.127", features = ["preserve_order"] }
 shellexpand = "3.1.0"
-tokio = { version = "1.39.3", features = ["full"] }
 tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter", "serde", "serde_json", "json"] }
 whoami = "1.5.1"
 
-# reqwest with rustls for non-Linux targets
-reqwest = { version = "0.12.7", default-features = false, features = ["stream", "deflate", "json", "rustls-tls"] }
+[dependencies.clap]
+version = "4.5.16"
+features = ["derive", "env"]
 
-[target.'aarch64-unknown-linux-musl'.dependencies]
-# reqwest with rustls for Linux target
-reqwest = { version = "0.12.7", default-features = false, features = ["stream", "deflate", "json", "rustls-tls"] }
+[dependencies.reqwest]
+version = "0.12.7"
+features = ["stream", "deflate", "json", "rustls-tls"]
+default-features = false
 
-[target.'x86_64-unknown-linux-musl'.dependencies]
-# reqwest with rustls for Linux target
-reqwest = { version = "0.12.7", default-features = false, features = ["stream", "deflate", "json", "rustls-tls"] }
+[dependencies.serde]
+version = "1.0.209"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1.0.127"
+features = ["preserve_order"]
+
+[dependencies.tokio]
+version = "1.39.3"
+features = ["full"]
+
+[dependencies.tracing-subscriber]
+version = "0.3.18"
+features = ["env-filter", "serde", "serde_json", "json"]
+
+[target.aarch64-unknown-linux-musl.dependencies.reqwest]
+version = "0.12.7"
+features = ["stream", "deflate", "json", "rustls-tls"]
+default-features = false
+
+[target.aarch64-unknown-linux-musl.dev-dependencies]
+
+[target.aarch64-unknown-linux-musl.build-dependencies]
+
+[target.x86_64-unknown-linux-musl.dependencies.reqwest]
+version = "0.12.7"
+features = ["stream", "deflate", "json", "rustls-tls"]
+default-features = false
+
+[target.x86_64-unknown-linux-musl.dev-dependencies]
+
+[target.x86_64-unknown-linux-musl.build-dependencies]
