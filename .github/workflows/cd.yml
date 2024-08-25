@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/semrel
+          path: target/${{ matrix.target }}/release/refresh
 
   release:
     needs: [semrel, cross-build, native-build]
