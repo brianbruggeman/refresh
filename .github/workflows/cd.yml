@@ -24,7 +24,7 @@ jobs:
       log: ${{ steps.semrel.outputs.log }}
       next-version: ${{ steps.semrel.outputs.next-version }}
       release-notes: ${{ steps.semrel.outputs.release-notes }}
-      version_changed: ${{ steps.version-change-detection.outputs.version_changed }}
+      version-changed: ${{ steps.version-change-detection.outputs.version-changed }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -58,7 +58,7 @@ jobs:
 
   release:
     needs: detect-version-change
-    if: ${{ needs.detect-version-change.outputs.version_changed == 'true' }}
+    if: ${{ needs.detect-version-change.outputs.version-changed == 'true' }}
     name: release ${{ matrix.config.target }}
     strategy:
       fail-fast: false
