@@ -139,8 +139,6 @@ jobs:
       - name: Install semrel
         uses: brianbruggeman/semrel@main
       - name: Commit changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -152,16 +150,14 @@ jobs:
           "${{ needs.semrel.outputs.next-version }}" \
           "$(echo '${{ needs.semrel.outputs.release-notes }}' | base64 --decode)" \
           "$(echo '${{ needs.semrel.outputs.log }}' | base64 --decode)" \
-          | git commit -F - || :
-          git remote set-url origin https://x-access-token:${{ env.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          | git commit -F -
+          git remote set-url origin "https://x-access-token:${{ env.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git push origin HEAD:main
       - name: Create Release Notes
         run: printf "%s" "${{ needs.semrel.outputs.release-notes }}" | base64 --decode > release-notes-${{ needs.semrel.outputs.next-version }}.md
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           files: |
             refresh-${{ needs.semrel.outputs.next-version }}-arm64-apple-darwin.tgz
