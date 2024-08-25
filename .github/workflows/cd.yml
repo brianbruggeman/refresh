@@ -20,8 +20,11 @@ jobs:
     name: Detect version change
     runs-on: ubuntu-latest
     outputs:
+      current-version: ${{ steps.version-detection.outputs.current-version }}
+      log: ${{ steps.version-detection.outputs.log }}
+      next-version: ${{ steps.version-detection.outputs.next-version }}
+      release-notes: ${{ steps.version-detection.outputs.release-notes }}
       version_changed: ${{ steps.version-change-detection.outputs.version_changed }}
-      version: ${{ steps.version-detection.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
