@@ -58,7 +58,7 @@ jobs:
           uses: actions/cache@v4
           with:
             path: ~/.cargo/bin/cross
-            key: ${{ runner.os }}-cross
+            key: ${{ matrix.os }}-cross
         - name: Check if Cross is installed
           if: steps.cache-cross.outputs.cache-hit == 'true'
           id: cross-check
@@ -142,6 +142,8 @@ jobs:
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-x86_64-apple-darwin.tgz -C x86_64-apple-darwin .
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-aarch64-unknown-linux-musl.tgz -C aarch64-unknown-linux-musl .
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-x86_64-unknown-linux-musl.tgz -C x86_64-unknown-linux-musl .
+      - name: Install semrel
+        uses: brianbruggeman/semrel@main
       - name: Commit changes
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
