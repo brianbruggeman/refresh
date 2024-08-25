@@ -25,38 +25,28 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: List all tags
-        run: |
-          git tag || echo "No tags found"
+      - uses: brianbruggeman/semrel@main
+        id: semrel
 
-      - name: Get latest tag version
-        id: latest-tag
+      - name: Check for version change
+        id: version-check
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "")
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          echo "Version found: '${LATEST_TAG}'"
-
-      - name: Get version from Cargo.toml
-        id: version-detection
-        run: |
-          CARGO_VERSION=$(grep '^version = ' Cargo.toml | sed 's/version = "\(.*\)"/\1/')
-          echo "CARGO_VERSION=$CARGO_VERSION" >> $GITHUB_ENV
-          echo "::set-output name=version::$CARGO_VERSION"
-          echo "Application version found: '${CARGO_VERSION}'"
-
-      - name: Compare versions
-        id: version-change-detection
-        run: |
-          if [ "$CARGO_VERSION" != "$LATEST_TAG" ]; then
-            echo "Version changed from '$LATEST_TAG' to '$CARGO_VERSION'"
-            echo "::set-output name=version_changed::true"
+          if [ "${{ steps.semrel.outputs.next-version }}" != "${{ steps.semrel.outputs.current-version }}" ]; then
+            echo "version-changed=true" >> $GITHUB_ENV
+            echo "::set-output name=version-changed::true"
           else
-            echo "Version did not change"
-            echo "::set-output name=version_changed::false"
+            echo "version-changed=false" >> $GITHUB_ENV
+            echo "::set-output name=version-changed::false"
           fi
+          echo "RELEASE_NOTES=${{ steps.semrel.output.release-notes }}" >> $GITHUB_ENV
+          echo "::set-output name=release-notes=$RELEASE_NOTES"
+          echo "CURRENT_VERSION=${{ steps.semrel.output.current-version }}" >> $GITHUB_ENV
+          echo "::set-output name=current-version=$CURRENT_VERSION"
+          echo "NEXT_VERSION=${{ steps.semrel.output.next-version }}" >> $GITHUB_ENV
+          echo "::set-output name=next-version=$NEXT_VERSION"
+          echo "LOG=${{ steps.semrel.output.log }}" >> $GITHUB_ENV
+          echo "::set-output name=log=$LOG"
 
   release:
     needs: detect-version-change
@@ -87,18 +77,6 @@ jobs:
         if: ${{ contains(matrix.config.target, 'musl') && contains(matrix.config.target, 'linux') }}
         run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
 
-      - name: Cache Cargo
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dependencies
-        with:
-          path: |
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            target
-          key: ${{ runner.os }}-build-${{ matrix.config.target}}-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
-
       - name: "Native: Build binary"
         if: ${{ matrix.config.cross == false }}
         run: cargo build --release --target=${{ matrix.config.target }}
@@ -113,10 +91,10 @@ jobs:
 
       - name: Get tag version
         id: get_version
-        run: echo "VERSION=${{ needs.detect-version-change.outputs.version }}" >> $GITHUB_ENV
+        run: echo "NEXT_VERSION=${{ needs.detect-version-change.outputs.next-version }}" >> $GITHUB_ENV
 
       - name: Pack binaries
-        run: tar -C ./target/${{ matrix.config.target }}/release -czvf ${{ matrix.config.bin_name }}-${{ env.VERSION }}-${{ matrix.config.target }}.tar.gz ${{ matrix.config.bin_name }}
+        run: tar -C ./target/${{ matrix.config.target }}/release -czvf ${{ matrix.config.bin_name }}-${{ env.NEXT_VERSION }}-${{ matrix.config.target }}.tar.gz ${{ matrix.config.bin_name }}
 
       - name: Release binaries
         uses: svenstaro/upload-release-action@v1-release
