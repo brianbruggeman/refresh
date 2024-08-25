@@ -9,12 +9,12 @@ on:
       types:
         - completed
 
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Commit SHA to run the workflow on'
-        required: true
-        default: 'main'
+    workflow_dispatch:
+      inputs:
+        ref:
+          description: 'Commit SHA to run the workflow on'
+          required: true
+          default: 'main'
 
 jobs:
   semrel:
