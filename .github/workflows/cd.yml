@@ -20,10 +20,10 @@ jobs:
     name: Detect version change
     runs-on: ubuntu-latest
     outputs:
-      current-version: ${{ steps.version-check.outputs.current-version }}
-      log: ${{ steps.version-check.outputs.log }}
-      next-version: ${{ steps.version-check.outputs.next-version }}
-      release-notes: ${{ steps.version-check.outputs.release-notes }}
+      current-version: ${{ steps.semrel.outputs.current-version }}
+      log: ${{ steps.semrel.outputs.log }}
+      next-version: ${{ steps.semrel.outputs.next-version }}
+      release-notes: ${{ steps.semrel.outputs.release-notes }}
       version_changed: ${{ steps.version-change-detection.outputs.version_changed }}
     steps:
       - name: Checkout Code
@@ -40,10 +40,10 @@ jobs:
           release_notes=$(./semrel show notes)
           log=$(./semrel show log)
 
-          echo "current-version=$current_version" >> $GITHUB_OUTPUT
-          echo "next-version=$next_version" >> $GITHUB_OUTPUT
-          echo "release-notes=$release_notes" >> $GITHUB_OUTPUT
-          echo "log=$log" >> $GITHUB_OUTPUT
+          echo "current-version=$(./semrel show current)" >> $GITHUB_OUTPUT
+          echo "next-version=$(./semrel show next)" >> $GITHUB_OUTPUT
+          echo "release-notes=$(./semrel show notes | base64)" >> $GITHUB_OUTPUT
+          echo "log=$(./semrel show log | base64)" >> $GITHUB_OUTPUT
 
       - name: Check for version change
         id: version-check
@@ -53,10 +53,6 @@ jobs:
           else
             echo "version-changed=false" >> $GITHUB_OUTPUT
           fi
-          echo "RELEASE_NOTES=${{ steps.semrel.output.release-notes }}" >> $GITHUB_OUTPUT
-          echo "CURRENT_VERSION=${{ steps.semrel.output.current-version }}" >> $GITHUB_OUTPUT
-          echo "NEXT_VERSION=${{ steps.semrel.output.next-version }}" >> $GITHUB_OUTPUT
-          echo "LOG=${{ steps.semrel.output.log }}" >> $GITHUB_OUTPUT
 
   release:
     needs: detect-version-change
