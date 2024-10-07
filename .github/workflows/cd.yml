@@ -3,6 +3,10 @@ name: CD
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 on:
     workflow_run:
       workflows: ["CI"]
@@ -128,16 +132,13 @@ jobs:
           mv x86_64-apple-darwin/refresh x86_64-apple-darwin/refresh-${{ needs.semrel.outputs.next-version }}-x86_64-apple-darwin
           mv aarch64-unknown-linux-musl/refresh aarch64-unknown-linux-musl/refresh-${{ needs.semrel.outputs.next-version }}-aarch64-unknown-linux-musl
           mv x86_64-unknown-linux-musl/refresh x86_64-unknown-linux-musl/refresh-${{ needs.semrel.outputs.next-version }}-x86_64-unknown-linux-musl
-          echo "Path: ${PATH}"
-          cp x86_64-unknown-linux-musl/refresh-${{ needs.semrel.outputs.next-version }}-x86_64-unknown-linux-musl ~/.cargo/bin/refresh
       - name: Package Artifacts
         run: |
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-arm64-apple-darwin.tgz -C aarch64-apple-darwin .
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-x86_64-apple-darwin.tgz -C x86_64-apple-darwin .
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-aarch64-unknown-linux-musl.tgz -C aarch64-unknown-linux-musl .
           tar czvf refresh-${{ needs.semrel.outputs.next-version }}-x86_64-unknown-linux-musl.tgz -C x86_64-unknown-linux-musl .
-      - name: Install semrel
-        uses: brianbruggeman/semrel@main
+      - uses: brianbruggeman/semrel@main
       - name: Commit changes
         run: |
           git config user.name github-actions
