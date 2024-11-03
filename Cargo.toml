@@ -25,7 +25,7 @@ features = ["stream", "deflate", "json", "rustls-tls"]
 default-features = false
 
 [dependencies.serde]
-version = "1.0.213"
+version = "1.0.214"
 features = ["derive"]
 
 [dependencies.serde_json]
