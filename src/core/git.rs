@@ -50,6 +50,7 @@ pub async fn clone_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: &
     // Check results
     results.into_iter().flatten().collect::<anyhow::Result<Vec<_>>>()?;
 
+    pb.finish_with_message("Cloning completed");
     Ok(())
 }
 
@@ -175,5 +176,6 @@ pub async fn update_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: 
     // Check results
     results.into_iter().flatten().collect::<anyhow::Result<Vec<_>>>()?;
 
+    pb.finish_with_message("Updating completed");
     Ok(())
 }
