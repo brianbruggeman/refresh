@@ -1,25 +1,44 @@
 [package]
 name = "refresh"
-version = "0.1.22"
+version = "0.1.23"
 edition = "2021"
 
 [dependencies]
 anyhow = "1.0.97"
-clap = { version = "4.5.32", features = ["derive", "env"] }
 dotenvy = "0.15.7"
 futures = "0.3.31"
 indicatif = "0.17.11"
 path-absolutize = "3.1.1"
 rayon = "1.10.0"
-reqwest = { version = "0.12.12", default-features = false, features = ["stream", "deflate", "json", "rustls-tls"] }
 rpassword = "7.3.1"
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = { version = "1.0.140", features = ["preserve_order"] }
 shellexpand = "3.1.0"
-tokio = { version = "1.44.1", features = ["full"] }
 tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter", "serde", "serde_json", "json"] }
 whoami = "1.6.0"
+
+[dependencies.clap]
+version = "4.5.32"
+features = ["derive", "env"]
+
+[dependencies.reqwest]
+version = "0.12.12"
+features = ["stream", "deflate", "json", "rustls-tls"]
+default-features = false
+
+[dependencies.serde]
+version = "1.0.219"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1.0.140"
+features = ["preserve_order"]
+
+[dependencies.tokio]
+version = "1.44.1"
+features = ["full"]
+
+[dependencies.tracing-subscriber]
+version = "0.3.19"
+features = ["env-filter", "serde", "serde_json", "json"]
 
 [target.aarch64-unknown-linux-musl.dependencies.reqwest]
 version = "0.12.15"
