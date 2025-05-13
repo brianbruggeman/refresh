@@ -4,14 +4,14 @@ version = "0.1.28"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.97"
+anyhow = "1.0.98"
 dotenvy = "0.15.7"
 futures = "0.3.31"
 indicatif = "0.17.11"
 path-absolutize = "3.1.1"
 rayon = "1.10.0"
-rpassword = "7.3.1"
-shellexpand = "3.1.0"
+rpassword = "7.4.0"
+shellexpand = "3.1.1"
 tracing = "0.1.41"
 whoami = "1.6.0"
 
@@ -20,7 +20,7 @@ version = "4.5.38"
 features = ["derive", "env"]
 
 [dependencies.reqwest]
-version = "0.12.12"
+version = "0.12.15"
 features = ["stream", "deflate", "json", "rustls-tls"]
 default-features = false
 
