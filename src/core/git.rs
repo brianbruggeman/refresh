@@ -6,7 +6,7 @@ use futures::future::join_all;
 use indicatif::{ProgressBar, ProgressStyle};
 use tokio::task;
 
-use super::{true_path, Repo};
+use super::{Repo, true_path};
 
 pub async fn clone_repos(repos: &[Repo], path: impl AsRef<Path>, github_token: &str) -> anyhow::Result<()> {
     if repos.is_empty() {

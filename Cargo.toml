@@ -1,7 +1,13 @@
 [package]
 name = "refresh"
 version = "0.1.33"
-edition = "2021"
+edition = "2024"
+
+[lints.rust]
+warnings = "deny"
+
+[lints.clippy]
+collapsible_if = "allow"
 
 [dependencies]
 anyhow = "1.0.98"
