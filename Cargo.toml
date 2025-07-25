@@ -1,13 +1,7 @@
 [package]
 name = "refresh"
-version = "0.1.33"
+version = "0.1.34"
 edition = "2024"
-
-[lints.rust]
-warnings = "deny"
-
-[lints.clippy]
-collapsible_if = "allow"
 
 [dependencies]
 anyhow = "1.0.98"
@@ -63,3 +57,9 @@ default-features = false
 [target.x86_64-unknown-linux-musl.dev-dependencies]
 
 [target.x86_64-unknown-linux-musl.build-dependencies]
+
+[lints.clippy]
+collapsible_if = "allow"
+
+[lints.rust]
+warnings = "deny"
