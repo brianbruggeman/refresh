@@ -14,7 +14,7 @@ pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Resu
         tracing::debug!("Fetching repos from: {}", url);
         let response = client
             .get(&url)
-            .header("Authorization", format!("Bearer {}", github_token))
+            .header("Authorization", format!("Bearer {github_token}"))
             .header("Accept", "application/vnd.github+json")
             .header("X-GitHub-Api-Version", "2022-11-28")
             .header("User-Agent", "refresh")
