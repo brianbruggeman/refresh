@@ -33,7 +33,7 @@ version = "1.0.141"
 features = ["preserve_order"]
 
 [dependencies.tokio]
-version = "1.46.1"
+version = "1.47.0"
 features = ["full"]
 
 [dependencies.tracing-subscriber]
