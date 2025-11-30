@@ -12,7 +12,7 @@ path-absolutize = "3.1.1"
 rayon = "1.11.0"
 rpassword = "7.4.0"
 shellexpand = "3.1.1"
-tracing = "0.1.41"
+tracing = "0.1.43"
 whoami = "1.6.1"
 
 [dependencies.clap]
