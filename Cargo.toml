@@ -37,7 +37,7 @@ version = "1.48.0"
 features = ["full"]
 
 [dependencies.tracing-subscriber]
-version = "0.3.20"
+version = "0.3.22"
 features = ["env-filter", "serde", "serde_json", "json"]
 
 [target.aarch64-unknown-linux-musl.dependencies.reqwest]
