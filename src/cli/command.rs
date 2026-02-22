@@ -62,7 +62,7 @@ impl Command {
             cmd.org_name = filename.to_string();
         }
         if cmd.org_name == "mine" {
-            cmd.org_name = whoami::username();
+            cmd.org_name = whoami::username().unwrap_or_default();
         }
         tracing::debug!("Set org to: `{}`", cmd.org_name);
 

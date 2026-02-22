@@ -2,8 +2,8 @@ use super::Repo;
 
 pub async fn fetch_repo_list(org_name: &str, github_token: &str) -> anyhow::Result<Vec<Repo>> {
     let client = reqwest::Client::new();
-    let user = whoami::username();
-    let org_or_user = match org_name == user {
+    let user = whoami::username().unwrap_or_default();
+    let org_or_user = match org_name == user.as_str() {
         true => "users",
         false => "orgs",
     };
